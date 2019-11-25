@@ -1,9 +1,13 @@
 package life.lsx.mycommunity.controller;
 
-import org.springframework.beans.factory.annotation.Value;
+import life.lsx.mycommunity.mapper.UserMapper;
+import life.lsx.mycommunity.model.User;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * @ClassName HelloController
@@ -14,20 +18,24 @@ import org.springframework.web.bind.annotation.GetMapping;
  */
 @Controller
 public class IndexController {
-    @Value("${github.authorize.address}")
-    private String AUTHORIZE_ADDRESS;
-    @Value("${github.client.id}")
-    private String CLIENT_ID;
-    @Value("${github.client.secret}")
-    private String CLIENT_SECRET;
-    @Value("${github.redirect.uri}")
-    private String CALLBACK_URL;
+    @Autowired
+    private UserMapper userMapper;
     @GetMapping("/")
-    public String index(Model model){
-        model.addAttribute("address", AUTHORIZE_ADDRESS);
-        model.addAttribute("clientId", CLIENT_ID);
-        model.addAttribute("clientSecret", CLIENT_SECRET);
-        model.addAttribute("callbackUrl", CALLBACK_URL);
+    public String index(HttpServletRequest request){
+        Cookie[] cookies = request.getCookies();
+        if(cookies != null && cookies.length>0){
+            for(Cookie k : cookies){
+                if(k.getName().equals("token")){
+                    String token = k.getValue();
+                    //Alt + 回车生成方法
+                    User user =  userMapper.findByToken(token);
+                    if(user != null){
+                        request.getSession().setAttribute("user", user);
+                    }
+                    break;
+                }
+            }
+        }
         return "index";
     }
 }
