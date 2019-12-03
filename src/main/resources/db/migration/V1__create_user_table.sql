@@ -1,0 +1,11 @@
+create table USER
+(
+  ID           BIGINT NOT NULL AUTO_INCREMENT primary key,
+  ACCOUNT_ID   VARCHAR(100),
+  NAME         VARCHAR(50),
+  TOKEN        VARCHAR(36),
+  GMT_CREATE   BIGINT,
+  GMT_MODIFIED BIGINT,
+  AVATAR_URL   VARCHAR(100)
+);
+
