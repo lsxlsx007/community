@@ -8,6 +8,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static java.util.stream.Collectors.toList;
+
 /**
  * @ClassName Dish
  * @Description TODO
@@ -38,9 +40,37 @@ public class Dish {
                 new Dish("prawns", false, 300, Dish.Type.FISH),
                 new Dish("salmon", false, 450, Dish.Type.FISH) );
 
-         List<String> list = menu.stream().filter(t->t.isVegetarian()==false).map(Dish::getName).collect(Collectors.toList());
-        System.out.println(list);
+         List<String> list = menu.stream().filter(t->t.isVegetarian()==false).map(Dish::getName).collect(toList());
+//        System.out.println(list);
         List<String> words = Arrays.asList("Java 8", "Lambdas", "In", "Action");
-        words.forEach(item-> System.out.println(item));
+//        words.forEach(item-> System.out.println(item));
+
+        List<String> uniqueCharacters =
+                words.stream()
+                        .map(w -> w.split(""))
+                        .flatMap(Arrays::stream)
+                        .distinct()
+                        .collect(Collectors.toList());
+//        uniqueCharacters.forEach(item-> System.out.print(item+","));
+
+        List<Integer> arr = Arrays.asList(1,2,3,4);
+        List<Integer> newArr = arr.stream().map(item->item*item).collect(Collectors.toList());
+//        newArr.forEach(item-> System.out.print(item+","));
+
+        List<Integer> numbers1 = Arrays.asList(1, 8, 3);
+        List<Integer> numbers2 = Arrays.asList(3, 4);
+        List<int[]> pairs = numbers1.stream().flatMap(i -> numbers2.stream().map(j -> new int[]{i, j})).collect(toList());
+        pairs.forEach(item-> {
+            for(int i:item){
+                System.out.print(i+",");
+            }
+            System.out.println();
+        });
+
+        if(menu.stream().anyMatch(Dish::isVegetarian)){
+            System.out.println("The menu is (somewhat) vegetarian friendly!!");
+        }
+        Integer sum = numbers1.stream().reduce(0,(a,b)->a+b);
+        System.out.println("sum: "+sum);
     }
 }
